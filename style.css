@@ -1,0 +1,120 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background-color: #78c1f3;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('flower.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding-top: 80px;  /* Space for fixed navbar */
+}
+h1{
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+.container {
+    background-color: white;
+    padding: 25px;
+    box-shadow: 10px 10px 0 0 #000000;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: calc(100% - 40px);
+    max-width: 700px;
+    text-align: center;
+}
+
+.startgame {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(1, 100px);
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.startgame .card {
+    font-size: 1.2rem;
+    user-select: none;
+}
+
+.card {
+    text-align: center;
+    cursor: pointer;
+    font-size: 2rem;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    perspective: 1000px;
+}
+
+.card div {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    color: #78c1f3;
+    background: #fdf5e6;
+    border-radius: 10px;
+    transition: transform 500ms ease-out;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.front {
+    transform: rotateY(0deg);
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+.card:hover .front, .card:active .front {
+    transform: rotateY(180deg);
+}
+
+.card:hover .back, .card:active .back {
+    transform: rotateY(0deg);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.navbar-custom {
+    background-color: rgba(212, 173, 237, 0.9);  /* Adjusted color for visibility */
+}
+
+.navbar-custom .nav-link {
+    color: beige; /* Beige text color */
+    text-decoration: none; /* Remove underline */
+    outline: none; /* Remove focus outline */
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link:focus {
+    color: black; /* Black color on hover */
+    outline: none; /* Ensure no outline on hover or focus */
+}
+
+.nav-item:hover {
+    background-color: rgba(86, 113, 136, 0.7);
+}
+
+.navbar {
+    width: 100%;  /* Full width */
+    position: fixed;  /* Fixed position at the top */
+    top: 0;  /* At the top of the page */
+    z-index: 1000;  /* Ensure it stays above other content */
+}

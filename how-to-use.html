@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>How to Use • Campus Eats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-stack: 'Inter', system-ui, sans-serif;
+      --color-primary: #7c5cff;
+      --color-accent: #00d4ff;
+      --color-bg-rgb: 11,16,32;
+    }
+    html { scroll-behavior: smooth; font-family: var(--font-stack); }
+    :root:not(.light) {
+      --color-bg: #0b1020;
+      --color-card: #121936;
+      --color-text: #e9ecf1;
+      --color-bg-rgb: 11,16,32;
+    }
+    .light {
+      --color-bg: #f7f8fc;
+      --color-card: #ffffff;
+      --color-text: #1e293b;
+      --color-bg-rgb: 247,248,252;
+    }
+    
+    /* Improved text contrast in light mode */
+    .light .text-gray-400 {
+      color: #475569;  /* Slate 600 for better contrast */
+    }
+    .light .text-gray-300 {
+      color: #2d3748;  /* Slate 800 for better contrast */
+    }
+    .light .text-white {
+      color: var(--color-text);
+    }
+    body {
+      background: linear-gradient(120deg, var(--color-bg), #0f172a 70%);
+      color: var(--color-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .light body {
+      background: linear-gradient(120deg, var(--color-bg), #f0f3f8 70%);
+    }
+    .card-base {
+      background-color: var(--color-card);
+      border: 1px solid rgba(124, 92, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .nav-gradient {
+      background: rgba(var(--color-bg-rgb), 0.8);
+      backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body class="p-0 m-0">
+  <!-- Top Navigation Bar -->
+  <nav class="sticky top-0 z-50 nav-gradient border-b border-gray-700/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-8">
+          <!-- Logo Section -->
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-cyan-400"></div>
+            <a href="dayscholar.html" class="font-extrabold text-xl tracking-tight">Campus Eats</a>
+          </div>
+          <!-- Navigation Links -->
+          <div class="hidden md:flex space-x-6 text-sm">
+            <a href="dayscholar.html" class="text-gray-300 hover:text-white transition">Order Food</a>
+            <a href="how-to-use.html" class="text-gray-300 hover:text-white transition font-semibold">How to Use</a>
+            <a href="about.html" class="text-gray-300 hover:text-white transition">About Us</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div id="google_translate_element"></div>
+          <button id="modeToggle" class="p-2 rounded-full hover:bg-gray-700/50 transition">🌙</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="card-base p-8 rounded-2xl">
+      <h1 class="text-4xl font-bold mb-6">How to Use Campus Eats</h1>
+      
+      <div class="space-y-8 text-gray-400">
+        <!-- Step 1 -->
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-4">1. Login</h2>
+          <p class="mb-4">Enter your student details:</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li>Full Name</li>
+            <li>Roll Number</li>
+          </ul>
+        </div>
+
+        <!-- Step 2 -->
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-4">2. Browse Restaurants</h2>
+          <p class="mb-4">Explore our diverse selection of campus eateries:</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li>24 different restaurants and cafés</li>
+            <li>Filter by cuisine type</li>
+            <li>View menu items and prices</li>
+          </ul>
+        </div>
+
+        <!-- Step 3 -->
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-4">3. Place Your Order</h2>
+          <p class="mb-4">Adding items to your cart:</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li>Click on restaurant cards to view menus</li>
+            <li>Add items to your cart</li>
+            <li>Review your order in the cart</li>
+          </ul>
+        </div>
+
+        <!-- Step 4 -->
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-4">4. Payment Options</h2>
+          <p class="mb-4">Choose from multiple payment methods:</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li>Campus Wallet</li>
+            <li>Razorpay (UPI/Cards)</li>
+            <li>Cash at Counter</li>
+          </ul>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="mt-8 p-6 bg-purple-900/20 rounded-xl">
+          <h2 class="text-2xl font-bold text-white mb-4">Pro Tips</h2>
+          <ul class="list-disc list-inside space-y-2">
+            <li>Keep your campus wallet topped up for quick payments</li>
+            <li>Check for available coupons before ordering</li>
+            <li>Use the language selector for multi-language support</li>
+            <li>Toggle between light and dark modes for comfort</li>
+          </ul>
+        </div>
+
+        <!-- Support Section -->
+        <div class="mt-8">
+          <h2 class="text-2xl font-bold text-white mb-4">Need Help?</h2>
+          <p>If you need assistance, contact our support team:</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li>Email: support@campuseats.edu</li>
+            <li>Phone: (555) 123-4567</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'hi,fr,pa,ja',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+
+    // Theme Toggle
+    document.getElementById('modeToggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+      const isLight = document.documentElement.classList.contains('light');
+      document.getElementById('modeToggle').textContent = isLight ? '☀️' : '🌙';
+    });
+
+    // Set initial mode toggle text
+    const isLight = document.documentElement.classList.contains('light');
+    document.getElementById('modeToggle').textContent = isLight ? '☀️' : '🌙';
+  </script>
+</body>
+</html>

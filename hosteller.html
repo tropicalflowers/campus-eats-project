@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Campus Eats • Hosteller</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* Custom styles and configuration variables */
+    :root {
+      --font-stack: 'Inter', system-ui, sans-serif;
+      /* NEW PALETTE: Indigo/Yellow for dark mode contrast */
+      --color-accent: #818cf8; /* Indigo 400 (Primary accent for buttons/links) */
+      --color-secondary: #facc15; /* Yellow 400 (Secondary accent for money/warnings) */
+      
+      /* Base Dark Mode Settings (Default) */
+      --color-bg: #0f172a; /* Slate 900 */
+      --color-card: #1e293b; /* Slate 800 */
+      --color-text: #f1f5f9; /* Slate 100 */
+      --color-bg-rgb: 15,23,42;
+    }
+    
+    /* Light Mode Overrides */
+    .light {
+      /* NEW PALETTE: Muted Blue for accent, brighter backgrounds */
+      --color-accent: #4f46e5; /* Indigo 600 */
+      --color-secondary: #f97316; /* Orange 500 */
+      --color-bg: #f8fafc; /* Slate 50 */
+      --color-card: #ffffff; /* White */
+      --color-text: #1e293b; /* Slate 800 */
+      --color-bg-rgb: 248,250,252;
+      --color-gray-400: #475569; /* Slate 600 for better contrast */
+      --color-gray-500: #334155; /* Slate 700 for better contrast */
+    }
+    
+    /* Dark mode specific colors */
+    :root:not(.light) {
+      --color-gray-400: #94a3b8; /* Slate 400 */
+      --color-gray-500: #64748b; /* Slate 500 */
+    }
+    
+    .light .text-slate-400 {
+      color: var(--color-gray-400);
+    }
+    .light .text-slate-500 {
+      color: var(--color-gray-500);
+    }
+    .light .text-white {
+      color: var(--color-text);
+    }
+
+    html { scroll-behavior: smooth; font-family: var(--font-stack); }
+    
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease;
+    }
+    
+    .card-base {
+      background-color: var(--color-card);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .light .card-base {
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .nav-gradient {
+      background: rgba(var(--color-bg-rgb), 0.9);
+      backdrop-filter: blur(10px);
+    }
+    
+    /* Primary Button (New Indigo accent) */
+    .btn-primary {
+      background: var(--color-accent);
+      color: var(--color-bg); /* Dark text on bright button */
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(129, 140, 248, 0.5); /* Indigo shadow */
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #6366f1; /* Indigo 500 */
+      box-shadow: 0 6px 16px rgba(129, 140, 248, 0.6);
+    }
+
+    /* Input Fields */
+    input[type="text"], input[type="date"], input[type="time"], select {
+      background-color: #334155; /* Slate 700 for input background */
+      border-color: #475569; /* Slate 600 for border */
+      color: var(--color-text);
+    }
+    .light input[type="text"], .light input[type="date"], .light input[type="time"], .light select {
+      background-color: #f1f5f9; /* Slate 100 */
+      border-color: #e2e8f0; /* Slate 200 */
+    }
+
+    /* Google Translate Styling */
+    .goog-logo-link, .goog-te-gadget .goog-te-combo {
+        font-size: 0.875rem !important;
+        border: 1px solid #475569;
+        border-radius: 0.375rem;
+        padding: 0.25rem 0.5rem;
+        background: var(--color-card);
+        color: var(--color-text);
+    }
+    .light .goog-logo-link, .light .goog-te-gadget .goog-te-combo {
+        border-color: #e2e8f0;
+    }
+  </style>
+</head>
+<body class="p-0 m-0">
+  <!-- Top Navigation Bar -->
+  <nav class="sticky top-0 z-50 nav-gradient border-b border-slate-700/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-8">
+          <!-- Logo Section -->
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-indigo-500/80 shadow-lg"></div>
+            <span class="font-extrabold text-xl tracking-tight text-white">Campus Eats</span>
+            <span class="role-pill bg-indigo-500/20 text-indigo-400 text-xs font-mono px-2 py-0.5 rounded-full">🏠 <strong>Hosteller</strong></span>
+          </div>
+          <!-- Navigation Links -->
+          <div class="hidden md:flex space-x-6 text-sm">
+            <a href="hosteller.html" class="text-white font-semibold hover:text-indigo-400 transition">Order Food</a>
+            <a href="how-to-use.html" class="text-slate-300 hover:text-white transition">How to Use</a>
+            <a href="about.html" class="text-slate-300 hover:text-white transition">About Us</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="modeToggle" class="p-2 rounded-full hover:bg-slate-700/50 transition text-2xl">🌙</button>
+          <div id="google_translate_element"></div>
+          <button onclick="APP.openCartDrawer()" id="cartButton" class="p-2 rounded-full hover:bg-slate-700/50 transition relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span id="cartCount" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Hero Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <!-- Welcome Card -->
+      <div class="card-base p-8 rounded-2xl border-l-4 border-indigo-500">
+        <div class="bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-full text-sm font-semibold inline-block mb-3">
+            👋 Welcome, <span id="userNameDisplay">Guest</span>!
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">Hosteller Food Management</h1>
+        <p class="text-slate-400 mb-6 text-lg">Mess bookings, campus-wide food ordering, and wallet management in one place.</p>
+        <div class="flex flex-wrap gap-4 mt-4">
+            <button class="btn-primary font-bold py-3 px-6 rounded-xl hover:opacity-95 transition" onclick="document.getElementById('gallerySection').scrollIntoView({behavior:'smooth'})">
+                Start Ordering
+            </button>
+            <button class="bg-yellow-500 text-slate-900 font-bold py-3 px-6 rounded-xl hover:opacity-95 transition shadow-lg shadow-yellow-500/50" onclick="APP.openMessBookingDrawer()">
+                Book Mess
+            </button>
+        </div>
+      </div>
+
+      <!-- Wallet & Info Card (Soft Gold accent) -->
+      <div class="card-base p-8 rounded-2xl bg-slate-700/20 border-r-4 border-yellow-500">
+        <h3 class="text-xl font-bold mb-3">Campus Wallet Balance</h3>
+        <div class="text-4xl md:text-5xl font-extrabold text-yellow-400 mb-4">
+            ₹<span id="walletBalance">500</span>
+        </div>
+        <div class="flex flex-wrap gap-4 pt-2 border-t border-slate-700">
+            <button onclick="APP.openMessHistoryDrawer()" class="text-sm font-medium text-indigo-400 hover:underline flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Mess History
+            </button>
+            <button onclick="APP.openPreviousOrdersDrawer()" class="text-sm font-medium text-indigo-400 hover:underline flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                Previous Orders
+            </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Restaurant Gallery Section -->
+    <section class="mb-12" id="gallerySection">
+      <h2 class="text-3xl font-bold mb-6 pt-4 border-b pb-2 border-slate-700">🍽️ Restaurants & Shops (<span id="restCount">24</span>)</h2>
+      <div id="gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <!-- Restaurant Cards will be injected here by JS -->
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold mb-6 pt-4 border-b pb-2 border-slate-700">App Benefits</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="card-base p-4 rounded-xl text-center hover:shadow-indigo-500/30 hover:shadow-xl transition">
+          <div class="text-3xl mb-2 text-indigo-400">⚡</div>
+          <div class="font-bold">Fast Ordering</div>
+          <p class="text-xs text-slate-400">Skip queues, order in a few taps.</p>
+        </div>
+        <div class="card-base p-4 rounded-xl text-center hover:shadow-indigo-500/30 hover:shadow-xl transition">
+          <div class="text-3xl mb-2 text-indigo-400">🎯</div>
+          <div class="font-bold">Accurate Menus</div>
+          <p class="text-xs text-slate-400">Clear prices and descriptions.</p>
+        </div>
+        <div class="card-base p-4 rounded-xl text-center hover:shadow-indigo-500/30 hover:shadow-xl transition">
+          <div class="text-3xl mb-2 text-indigo-400">🪄</div>
+          <div class="font-bold">Mess Management</div>
+          <p class="text-xs text-slate-400">Book, cancel, and manage meals.</p>
+        </div>
+        <div class="card-base p-4 rounded-xl text-center hover:shadow-indigo-500/30 hover:shadow-xl transition">
+          <div class="text-3xl mb-2 text-indigo-400">🔒</div>
+          <div class="font-bold">Secure Access</div>
+          <p class="text-xs text-slate-400">Role-based portal access.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p class="text-center text-sm text-slate-500 mt-10">© 2025 Campus Food • All prices are in INR. Payments powered by Mock Razorpay API.</p>
+    </footer>
+  </div>
+
+  <!-- Global Modal/Drawer (Cart, Menu, Orders, Mess) -->
+  <div id="appDrawer" class="fixed inset-0 z-[100] hidden bg-black/70 backdrop-blur-sm" onclick="if(event.target.id === 'appDrawer') APP.closeDrawer()">
+    <div id="drawerContent" class="fixed right-0 top-0 h-full w-full sm:w-[480px] bg-slate-900 shadow-2xl transition-transform duration-300 transform translate-x-full">
+      <div class="p-6 h-full flex flex-col">
+        <div class="flex justify-between items-center pb-4 border-b border-slate-700/50">
+          <h2 id="drawerTitle" class="text-2xl font-bold text-white">Loading...</h2>
+          <button onclick="APP.closeDrawer()" class="p-2 rounded-full text-slate-400 hover:bg-slate-800/50 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div id="drawerBody" class="flex-grow overflow-y-auto py-4">
+          <!-- Content injected here -->
+        </div>
+        <div id="drawerFooter" class="pt-4 border-t border-slate-700/50">
+          <!-- Footer injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" id="loginModal">
+    <div class="card-base p-8 rounded-2xl w-full max-w-lg shadow-2xl">
+      <h2 class="text-3xl font-bold mb-2 text-white">Welcome • Hosteller Login</h2>
+      <p class="text-slate-400 mb-6">Enter your details to continue. Role: <span class="text-indigo-400 font-semibold">Hosteller</span>.</p>
+      
+      <div class="space-y-4">
+        <div>
+          <label for="inpName" class="text-sm font-medium text-slate-400">Full Name</label>
+          <input type="text" id="inpName" class="w-full mt-1 p-3 rounded-lg border focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your full name" />
+        </div>
+        <div>
+          <label for="inpRoll" class="text-sm font-medium text-slate-400">Roll Number</label>
+          <input type="text" id="inpRoll" class="w-full mt-1 p-3 rounded-lg border focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g. 23CS001" />
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button class="btn-primary font-bold py-3 px-6 rounded-xl" id="btnLogin">
+            Continue to App
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- START CORE JAVASCRIPT ---
+
+    // Constants (data from the original app.js)
+    const PAGE_ROLE = "Hosteller";
+    const RESTAURANTS = [
+      {"id":"tadka-house","name":"Tadka House","type":"Indian","img":"https://placehold.co/150x120/451a03/fff?text=Tadka","menu":{
+        "starters":[{"n":"Paneer Tikka","d":"Smoky cottage cheese skewers","p":180},{"n":"Veg Pakora","d":"Crispy fritters with chutney","p":120},{"n":"Chicken Tandoori","d":"Chargrilled, spiced","p":260}],
+        "drinks":[{"n":"Masala Chai","d":"Spiced Indian tea","p":40},{"n":"Mango Lassi","d":"Sweet yogurt blend","p":90},{"n":"Buttermilk","d":"Salted chaas","p":50}],
+        "main":[{"n":"Butter Chicken","d":"Creamy tomato gravy","p":280},{"n":"Dal Makhani","d":"Slow-cooked black lentils","p":220},{"n":"Veg Thali","d":"Assorted Indian platter","p":250}]
+      }},
+      {"id":"royal-thali","name":"Royal Thali","type":"Indian","img":"https://placehold.co/150x120/78350f/fff?text=Royal+Thali","menu":{
+        "starters":[{"n":"Aloo Tikki","d":"Crisp potato patties","p":110},{"n":"Hara Bhara Kebab","d":"Spinach & peas kebab","p":150},{"n":"Fish Amritsari","d":"Crisp batter fried fish","p":290}],
+        "drinks":[{"n":"Sweet Lassi","d":"Rich, creamy lassi","p":85},{"n":"Rooh Afza","d":"Rose sharbat cooler","p":60},{"n":"Jaljeera","d":"Tangy cumin refresher","p":55}],
+        "main":[{"n":"Paneer Butter Masala","d":"Silky makhani gravy","p":260},{"n":"Chole Bhature","d":"Delhi style","p":180},{"n":"Mutton Rogan Josh","d":"Kashmiri style","p":340}]
+      }},
+      {"id":"spice-route","name":"Spice Route","type":"Indian","img":"https://placehold.co/150x120/ca8a04/fff?text=Spice+Route","menu":{
+        "starters":[{"n":"Samosa","d":"Potato peas filling","p":60},{"n":"Paneer 65","d":"Spicy fried paneer","p":170},{"n":"Chicken Malai Tikka","d":"Creamy marinade","p":280}],
+        "drinks":[{"n":"Nimbu Pani","d":"Fresh lime soda","p":50},{"n":"Sugarcane Juice","d":"Pressed fresh","p":70},{"n":"Thandai","d":"Almond saffron milk","p":120}],
+        "main":[{"n":"Biryani (Veg/Chicken)","d":"Hyderabadi style","p":250},{"n":"Palak Paneer","d":"Spinach gravy","p":240},{"n":"Kadhai Chicken","d":"Bell peppers, onion","p":300}]
+      }},
+      {"id":"bean-bloom","name":"Bean & Bloom","type":"Coffee","img":"https://placehold.co/150x120/1c1917/fff?text=Coffee","menu":{
+        "starters":[{"n":"Butter Croissant","d":"Flaky layers","p":90},{"n":"Blueberry Muffin","d":"Soft, studded berries","p":110},{"n":"Avocado Toast","d":"Sourdough, lemon, chilli","p":180}],
+        "drinks":[{"n":"Espresso","d":"Double shot","p":100},{"n":"Cappuccino","d":"Foamy classic","p":130},{"n":"Iced Latte","d":"Cold & smooth","p":150}],
+        "main":[{"n":"Chicken Panini","d":"Grilled, pesto","p":220},{"n":"Veggie Wrap","d":"Hummus & veg","p":180},{"n":"Cookie Duo","d":"Chocolate & oatmeal","p":90}]
+      }},
+      {"id":"campus-caffeine","name":"Campus Caffeine","type":"Coffee","img":"https://placehold.co/150x120/0c4a6e/fff?text=Caffeine","menu":{
+        "starters":[{"n":"Donut","d":"Glazed ring","p":70},{"n":"Cinnamon Roll","d":"Swirled and iced","p":120},{"n":"Granola Yogurt","d":"Honey & nuts","p":140}],
+        "drinks":[{"n":"Americano","d":"Long black","p":110},{"n":"Mocha","d":"Chocolate espresso","p":150},{"n":"Cold Brew","d":"Slow steeped","p":160}],
+        "main":[{"n":"Egg Sandwich","d":"Cheese & lettuce","p":150},{"n":"Veg Quiche","d":"Spinach & corn","p":170},{"n":"Cupcake","d":"Vanilla/Chocolate","p":80}]
+      }},
+      {"id":"java-jar","name":"Java Jar","type":"Coffee","img":"https://placehold.co/150x120/083344/fff?text=Java","menu":{
+        "starters":[{"n":"Almond Biscotti","d":"Crunchy dunkers","p":80},{"n":"Brownie","d":"Gooey cocoa","p":110},{"n":"Bagel & Cream Cheese","d":"Toasted","p":130}],
+        "drinks":[{"n":"Flat White","d":"Velvety microfoam","p":140},{"n":"Macchiato","d":"Marked shot","p":120},{"n":"Iced Caramel Latte","d":"Sweet & chilled","p":170}],
+        "main":[{"n":"Chicken Salad Bowl","d":"Fresh & hearty","p":220},{"n":"Protein Cookie","d":"Oats & whey","p":90},{"n":"Mini Donuts","d":"Sugar dusted","p":85}]
+      }},
+      {"id":"brew-buddy","name":"Brew Buddy","type":"Coffee","img":"https://placehold.co/150x120/1f2937/fff?text=Brew+Buddy","menu":{
+        "starters":[{"n":"Banana Bread","d":"Moist slice","p":90},{"n":"Chocolate Chip Cookie","d":"Crispy edges","p":70},{"n":"Tomato Bruschetta","d":"Basil & olive oil","p":150}],
+        "drinks":[{"n":"Latte","d":"Silky milk","p":130},{"n":"Affogato","d":"Espresso over ice-cream","p":160},{"n":"Iced Tea","d":"Peach/lemon","p":110}],
+        "main":[{"n":"Pesto Pasta (Light)","d":"Basil & pine nuts","p":210},{"n":"Veggie Bowl","d":"Quinoa & greens","p":190},{"n":"Croissant Sandwich","d":"Cheese & tomato","p":170}]
+      }},
+      {"id":"cake-corner","name":"Cake Corner","type":"Cake Shop","img":"https://placehold.co/150x120/f9a8d4/fff?text=Cake+Shop","menu":{
+        "starters":[{"n":"Tea Cake Slice","d":"Buttery slice","p":80},{"n":"Cupcake Box (2)","d":"Frosted minis","p":120},{"n":"Cake Pops (3)","d":"Fun bites","p":100}],
+        "drinks":[{"n":"Hot Chocolate","d":"Rich cocoa","p":140},{"n":"Milkshake","d":"Strawberry/Choco","p":160},{"n":"Coffee","d":"Classic brew","p":90}],
+        "main":[{"n":"Chocolate Truffle Cake","d":"Half kg","p":550},{"n":"Red Velvet Cake","d":"Half kg","p":600},{"n":"Fruit Gateau","d":"Half kg","p":580}]
+      }},
+      {"id":"levain-lab","name":"Levain Lab","type":"Boulangerie","img":"https://placehold.co/150x120/7c2d12/fff?text=Boulangerie","menu":{
+        "starters":[{"n":"French Baguette","d":"Crusty loaf","p":120},{"n":"Sourdough Slice","d":"Naturally leavened","p":130},{"n":"Focaccia","d":"Rosemary & olive","p":150}],
+        "drinks":[{"n":"Cafe au Lait","d":"Mellow milk coffee","p":120},{"n":"Sparkling Water","d":"Refreshing","p":60},{"n":"Lemonade","d":"Fresh squeezed","p":80}],
+        "main":[{"n":"Ham & Cheese Baguette","d":"Classic Parisian","p":240},{"n":"Veg Paris Sandwich","d":"Tomato, lettuce, brie","p":220},{"n":"Almond Croissant","d":"Frangipane filled","p":140}]
+      }},
+      {"id":"eclair-atelier","name":"Éclair Atelier","type":"Patisserie","img":"https://placehold.co/150x120/6d28d9/fff?text=Patisserie","menu":{
+        "starters":[{"n":"Mini Éclairs (2)","d":"Chocolate & coffee","p":140},{"n":"Madeleines (5)","d":"Lemon shell cakes","p":120},{"n":"Crème Brûlée","d":"Crackly top","p":180}],
+        "drinks":[{"n":"Espresso","d":"Short & bold","p":100},{"n":"French Hot Chocolate","d":"Thick & lush","p":170},{"n":"Tea Selection","d":"Assorted","p":110}],
+        "main":[{"n":"Mille-Feuille","d":"Custard layers","p":220},{"n":"Opera Cake","d":"Almond & coffee","p":260},{"n":"Tarte Tatin","d":"Caramel apple tart","p":240}]
+      }},
+      {"id":"ramen-rush","name":"Ramen Rush","type":"Ramen","img":"https://placehold.co/150x120/f59e0b/fff?text=Ramen","menu":{
+        "starters":[{"n":"Gyoza (6)","d":"Pan-fried dumplings","p":180},{"n":"Edamame","d":"Sea salt","p":120},{"n":"Seaweed Salad","d":"Sesame dressing","p":140}],
+        "drinks":[{"n":"Green Tea","d":"Hot or iced","p":90},{"n":"Ramune","d":"Japanese soda","p":130},{"n":"Miso Soup","d":"Comforting bowl","p":100}],
+        "main":[{"n":"Shoyu Ramen","d":"Soy broth, pork","p":320},{"n":"Tonkotsu Ramen","d":"Rich pork broth","p":360},{"n":"Veg Miso Ramen","d":"Tofu & corn","p":300}]
+      }},
+      {"id":"taco-trail","name":"Taco Trail","type":"Tex-Mex","img":"https://placehold.co/150x120/b91c1c/fff?text=Taco+Trail","menu":{
+        "starters":[{"n":"Nachos","d":"Cheese & salsa","p":180},{"n":"Quesadilla","d":"Cheese filled","p":190},{"n":"Chips & Guac","d":"Fresh dip","p":160}],
+        "drinks":[{"n":"Soda","d":"Assorted","p":60},{"n":"Lime Agua Fresca","d":"Zesty & fresh","p":90},{"n":"Iced Coffee","d":"Light roast","p":110}],
+        "main":[{"n":"Tacos (2)","d":"Choose filling","p":220},{"n":"Burrito","d":"Stuffed & wrapped","p":260},{"n":"Loaded Fries","d":"Cheese & jalapeño","p":200}]
+      }},
+      {"id":"pizza-piazza","name":"Pizza Piazza","type":"Pizza","img":"https://placehold.co/150x120/f97316/fff?text=Pizza","menu":{
+        "starters":[{"n":"Garlic Bread","d":"Herb butter","p":120},{"n":"Cheesy Sticks","d":"Mozzarella pull","p":160},{"n":"Tomato Soup","d":"Creamy basil","p":130}],
+        "drinks":[{"n":"Soft Drink","d":"Assorted","p":60},{"n":"Iced Lemonade","d":"Fresh","p":90},{"n":"Iced Coffee","d":"Classic","p":110}],
+        "main":[{"n":"Margherita","d":"Tomato, basil","p":240},{"n":"Pepperoni","d":"Spicy slices","p":290},{"n":"Veggie Supreme","d":"Bell pepper, olive","p":270}]
+      }},
+      {"id":"slice-street","name":"Slice Street","type":"Pizza","img":"https://placehold.co/150x120/dc2626/fff?text=Slice+Street","menu":{
+        "starters":[{"n":"Jalapeño Poppers","d":"Cream cheese","p":170},{"n":"BBQ Wings","d":"Sticky glaze","p":220},{"n":"Greek Salad","d":"Feta & olive","p":180}],
+        "drinks":[{"n":"Cola/Fanta/Sprite","d":"Assorted","p":60},{"n":"Mint Mojito","d":"Virgin","p":120},{"n":"Bottled Water","d":"500 ml","p":30}],
+        "main":[{"n":"BBQ Chicken","d":"Onion & pepper","p":320},{"n":"Paneer Tikka Pizza","d":"Indian twist","p":310},{"n":"Four Cheese","d":"Cheddar, mozz, more","p":330}]
+      }},
+      {"id":"la-pino-like","name":"La Pino Like","type":"Pizza","img":"https://placehold.co/150x120/b45309/fff?text=La+Pino+Like","menu":{
+        "starters":[{"n":"Stuffed Garlic Bread","d":"Cheesy filling","p":190},{"n":"Corn Salad","d":"Sweet corn","p":150},{"n":"Tomato Bruschetta","d":"Basil & garlic","p":150}],
+        "drinks":[{"n":"Iced Tea","d":"Peach/lemon","p":110},{"n":"Soda","d":"Assorted","p":60},{"n":"Coffee","d":"Brewed","p":90}],
+        "main":[{"n":"Peri Peri Veg","d":"Spicy kick","p":300},{"n":"Farmhouse","d":"Loaded veggies","p":310},{"n":"Chicken Feast","d":"Meaty & hearty","p":340}]
+      }},
+      {"id":"burger-barn","name":"Burger Barn","type":"Fast Food","img":"https://placehold.co/150x120/4ade80/fff?text=Burger+Barn","menu":{
+        "starters":[{"n":"Fries","d":"Crispy & salted","p":90},{"n":"Onion Rings","d":"Golden crunch","p":110},{"n":"Cheese Corn Nuggets","d":"Molten bites","p":130}],
+        "drinks":[{"n":"Soda","d":"Assorted","p":60},{"n":"Thick Shake","d":"Vanilla/Choco","p":160},{"n":"Iced Coffee","d":"Brewed cold","p":120}],
+        "main":[{"n":"Veg Burger","d":"Signature sauce","p":160},{"n":"Chicken Burger","d":"Crispy fillet","p":200},{"n":"Paneer Wrap","d":"Spicy tikka","p":180}]
+      }},
+      {"id":"fries-factory","name":"Fries Factory","type":"Fast Food","img":"https://placehold.co/150x120/16a34a/fff?text=Fries+Factory","menu":{
+        "starters":[{"n":"Peri Fries","d":"Spicy dusting","p":110},{"n":"Loaded Nacho Fries","d":"Cheese & salsa","p":160},{"n":"Cheesy Garlic Bread","d":"Pull-apart","p":150}],
+        "drinks":[{"n":"Lemon Soda","d":"Sweet/salt","p":70},{"n":"Iced Tea","d":"Peach/lemon","p":110},{"n":"Cold Coffee","d":"Blended","p":130}],
+        "main":[{"n":"Double Patty Burger","d":"Extra indulgent","p":240},{"n":"Veggie Hot Dog","d":"Loaded","p":190},{"n":"Chicken Popcorn","d":"Bite-sized","p":180}]
+      }},
+      {"id":"wrap-n-roll","name":"Wrap N Roll","type":"Fast Food","img":"https://placehold.co/150x120/065f46/fff?text=Wrap+N+Roll","menu":{
+        "starters":[{"n":"Cheesy Nachos","d":"Salsa & jalapeño","p":150},{"n":"Corn Cheese Balls","d":"Crispy","p":140},{"n":"Garlic Bread","d":"Herb butter","p":120}],
+        "drinks":[{"n":"Smoothie","d":"Berry/banana","p":170},{"n":"Soda","d":"Assorted","p":60},{"n":"Bottled Water","d":"500 ml","p":30}],
+        "main":[{"n":"Paneer Kathi Roll","d":"Street style","p":190},{"n":"Chicken Kathi Roll","d":"Spicy & juicy","p":220},{"n":"Falafel Wrap","d":"Hummus & tahini","p":200}]
+      }},
+      {"id":"quick-bite","name":"Quick Bite","type":"Fast Food","img":"https://placehold.co/150x120/15803d/fff?text=Quick+Bite","menu":{
+        "starters":[{"n":"Cheese Fries","d":"Melted topping","p":140},{"n":"Tater Tots","d":"Crispy bites","p":130},{"n":"Chicken Wings","d":"Hot & spicy","p":240}],
+        "drinks":[{"n":"Soda","d":"Assorted","p":60},{"n":"Vanilla Shake","d":"Creamy","p":160},{"n":"Iced Latte","d":"Chilled","p":150}],
+        "main":[{"n":"Zinger Burger","d":"Crispy chicken","p":230},{"n":"Veg Supreme Burger","d":"All the fixings","p":200},{"n":"Chicken Wrap","d":"Garlic mayo","p":210}]
+      }},
+      {"id":"scoop-station","name":"Scoop Station","type":"Ice Cream","img":"https://placehold.co/150x120/f97316/fff?text=Scoop+Station","menu":{
+        "starters":[{"n":"Waffle Cone","d":"Fresh baked","p":40},{"n":"Brownie Bits","d":"Add-on","p":50},{"n":"Sprinkles","d":"Add-on","p":30}],
+        "drinks":[{"n":"Thick Shake","d":"Chocolate/Vanilla","p":170},{"n":"Floats","d":"Cola + vanilla","p":140},{"n":"Iced Coffee","d":"Sweet","p":120}],
+        "main":[{"n":"Single Scoop","d":"Any flavour","p":90},{"n":"Double Scoop","d":"Mix & match","p":140},{"n":"Sundae","d":"Toppings galore","p":180}]
+      }},
+      {"id":"frost-fiesta","name":"Frost Fiesta","type":"Ice Cream","img":"https://placehold.co/150x120/fb7185/fff?text=Frost+Fiesta","menu":{
+        "starters":[{"n":"Chocolate Chips","d":"Add-on","p":30},{"n":"Roasted Nuts","d":"Add-on","p":40},{"n":"Hot Fudge","d":"Add-on","p":40}],
+        "drinks":[{"n":"Milkshake","d":"Strawberry/Butterscotch","p":170},{"n":"Affogato","d":"Espresso + scoop","p":180},{"n":"Cold Coffee","d":"Classic","p":120}],
+        "main":[{"n":"Single Scoop","d":"Any flavour","p":90},{"n":"Double Scoop","d":"Mix & match","p":140},{"n":"Sundae Boat","d":"3 toppings","p":200}]
+      }},
+      {"id":"snack-shack","name":"Snack Shack","type":"Junk Food","img":"https://placehold.co/150x120/94a3b8/fff?text=Snack+Shack","menu":{
+        "starters":[{"n":"Chips (Large)","d":"Masala/Plain","p":60},{"n":"Nacho Chips","d":"Cheese dust","p":80},{"n":"Popcorn","d":"Salted","p":70}],
+        "drinks":[{"n":"Cola","d":"500 ml","p":40},{"n":"Energy Drink","d":"250 ml","p":120},{"n":"Iced Tea","d":"Lemon","p":60}],
+        "main":[{"n":"Chocolate Bar","d":"Assorted","p":50},{"n":"Cookie Pack","d":"Assorted","p":60},{"n":"Instant Noodles","d":"Cup","p":70}]
+      }},
+      {"id":"chill-chug","name":"Chill & Chug","type":"Junk Food","img":"https://placehold.co/150x120/64748b/fff?text=Chill+%26+Chug","menu":{
+        "starters":[{"n":"Masala Chips","d":"Spicy","p":60},{"n":"Tortilla Chips","d":"Crunchy","p":70},{"n":"Noodle Cup","d":"Classic masala","p":70}],
+        "drinks":[{"n":"Orange Soda","d":"500 ml","p":40},{"n":"Sparkling Water","d":"330 ml","p":50},{"n":"Cold Coffee Can","d":"Ready-to-drink","p":90}],
+        "main":[{"n":"Chocolate Assortment","d":"Mini bars","p":90},{"n":"Nutty Bar","d":"Peanut caramel","p":60},{"n":"Cookie Bites","d":"Choco chip","p":65}]
+      }},
+      {"id":"grab-n-go","name":"Grab N Go","type":"Junk Food","img":"https://placehold.co/150x120/475569/fff?text=Grab+N+Go","menu":{
+        "starters":[{"n":"Nacho Tub","d":"Cheese dip","p":100},{"n":"Salted Peanuts","d":"Roasted","p":50},{"n":"Trail Mix","d":"Fruit & nut","p":120}],
+        "drinks":[{"n":"Cola / Lemonade","d":"500 ml","p":40},{"n":"Iced Coffee","d":"Sweet","p":120},{"n":"Bottled Water","d":"1 L","p":30}],
+        "main":[{"n":"Chocolate Cookies","d":"Pack of 6","p":70},{"n":"Potato Chips","d":"Assorted flavours","p":60},{"n":"Protein Bar","d":"Peanut butter","p":90}]
+      }}
+    ];
+    
+    // Mess data storage (for Hostellers)
+    const MESS_HISTORY = JSON.parse(localStorage.getItem('messHistory')) || [];
+
+    // State management
+    const STATE = {
+      role: PAGE_ROLE,
+      user: JSON.parse(localStorage.getItem('campusUserHostel')) || null,
+      cart: JSON.parse(localStorage.getItem('campusCartHostel')) || [],
+      orders: JSON.parse(localStorage.getItem('campusOrdersHostel')) || [],
+      wallet: Number(localStorage.getItem('campusWalletHostel')) || 500, // starter credit
+      messHistory: JSON.parse(localStorage.getItem('messHistory')) || [], // Added for Hosteller features
+    };
+
+    // DOM helper
+    const $ = (q) => document.querySelector(q);
+    const $$ = (q) => [...document.querySelectorAll(q)];
+
+    // --- Core UI Functions ---
+
+    const APP = {
+      init() {
+        if (!STATE.user) {
+          $("#loginModal").classList.remove("hidden");
+        } else {
+          APP.updateUI();
+          this.renderGallery();
+        }
+        this.setupListeners();
+      },
+
+      updateUI() {
+        $("#userNameDisplay").textContent = STATE.user?.name || "Guest";
+        $("#walletBalance").textContent = STATE.wallet.toFixed(0);
+        $("#cartCount").textContent = STATE.cart.length;
+        $("#restCount").textContent = RESTAURANTS.length;
+        localStorage.setItem('campusUserHostel', JSON.stringify(STATE.user));
+        localStorage.setItem('campusCartHostel', JSON.stringify(STATE.cart));
+        localStorage.setItem('campusOrdersHostel', JSON.stringify(STATE.orders));
+        localStorage.setItem('campusWalletHostel', STATE.wallet);
+        localStorage.setItem('messHistory', JSON.stringify(STATE.messHistory));
+      },
+
+      showToast(msg, duration = 3000) {
+        const toastEl = document.createElement('div');
+        toastEl.className = "fixed bottom-4 left-1/2 -translate-x-1/2 p-4 bg-slate-800 text-white rounded-xl shadow-2xl z-[150] transition-opacity duration-300 transform scale-100 opacity-100";
+        toastEl.textContent = msg;
+        document.body.appendChild(toastEl);
+        setTimeout(() => {
+          toastEl.classList.add('opacity-0', 'scale-90');
+          setTimeout(() => toastEl.remove(), 300);
+        }, duration);
+      },
+
+      // --- Login/State Management ---
+      login() {
+        const name = $("#inpName").value.trim();
+        const roll = $("#inpRoll").value.trim();
+        if(!name || !roll) return APP.showToast("Please enter name and roll number.", 2000);
+        STATE.user = {name, roll, role: STATE.role};
+        $("#loginModal").classList.add("hidden");
+        APP.showToast(`Welcome, ${name}! Your Hosteller portal is ready.`, 3000);
+        APP.updateUI();
+        APP.renderGallery();
+      },
+
+      // --- Drawer/Modal Management (Single Source of Popups) ---
+      openDrawer() {
+        $("#appDrawer").classList.remove("hidden");
+        setTimeout(() => {
+          $("#drawerContent").classList.remove("translate-x-full");
+        }, 10);
+      },
+      
+      closeDrawer() {
+        $("#drawerContent").classList.add("translate-x-full");
+        setTimeout(() => {
+          $("#appDrawer").classList.add("hidden");
+          $("#drawerBody").innerHTML = ''; 
+          $("#drawerFooter").innerHTML = '';
+        }, 300);
+      },
+
+      // --- Gallery & Menu Rendering (Order Food) ---
+      renderGallery() {
+        const cardHtml = (r) => `
+          <div class="card-base p-3 rounded-xl hover:ring-2 ring-indigo-500/80 transition cursor-pointer" onclick="APP.openMenuDrawer('${r.id}')">
+            <img class="w-full h-28 object-cover rounded-lg mb-2" src="${r.img}" alt="${r.name} placeholder" loading="lazy"/>
+            <div class="font-bold text-lg text-white">${r.name}</div>
+            <div class="text-sm text-slate-400">${r.type}</div>
+            <div class="mt-2 flex gap-2">
+              <button class="text-xs font-medium text-slate-900 bg-indigo-500 hover:bg-indigo-600 py-1 px-3 rounded-lg">View Menu</button>
+            </div>
+          </div>`;
+        $("#gallery").innerHTML = RESTAURANTS.map(cardHtml).join("");
+      },
+
+      openMenuDrawer(id) {
+        const rest = RESTAURANTS.find(r => r.id === id);
+        if (!rest) return;
+        
+        const itemsBlock = (section, items) => `
+          <section class="mb-6">
+            <h3 class="text-xl font-bold mb-3 border-b border-slate-700 pb-1 text-indigo-400">${APP.capitalize(section)}</h3>
+            ${items.map(it => `
+              <div class='flex items-center justify-between py-2 border-b border-slate-800/50 last:border-b-0'>
+                <div class='flex-grow pr-4'>
+                  <div class='font-semibold text-white'>${it.n}</div>
+                  <div class='text-xs text-slate-400'>${it.d}</div>
+                </div>
+                <div class='font-bold text-yellow-400 min-w-[70px] text-right'>₹${it.p}</div>
+                <button 
+                  class='ml-3 text-xs font-medium text-slate-900 bg-indigo-500 hover:bg-indigo-600 py-1 px-3 rounded-lg transition' 
+                  onclick='APP.addToCart({id:"${id}", rest:"${rest.name}", item:"${it.n}", price:${it.p} }); APP.showToast("Added ${it.n} to cart!", 1500);'
+                >Add</button>
+              </div>
+            `).join("")}
+          </section>`;
+
+        $("#drawerTitle").textContent = rest.name + " Menu";
+        $("#drawerBody").innerHTML = `
+          <p class="text-slate-400 mb-4 font-medium">${rest.type} • Tap 'Add' to place items in your cart (🛒).</p>
+          <div class="space-y-6">
+            ${itemsBlock("starters", rest.menu.starters)}
+            ${itemsBlock("drinks", rest.menu.drinks)}
+            ${itemsBlock("main", rest.menu.main)}
+          </div>`;
+        $("#drawerFooter").innerHTML = `<button class="w-full btn-primary font-bold py-3 rounded-xl" onclick="APP.openCartDrawer()">View Cart (${STATE.cart.length} items)</button>`;
+        APP.openDrawer();
+      },
+
+      // --- Cart Logic (Order Food) ---
+      addToCart(item) {
+        STATE.cart.push(item);
+        APP.updateUI();
+      },
+      
+      openCartDrawer() {
+        const total = STATE.cart.reduce((a, c) => a + c.price, 0);
+        $("#drawerTitle").textContent = `🛒 Your Cart (${STATE.cart.length})`;
+
+        if (STATE.cart.length === 0) {
+          $("#drawerBody").innerHTML = '<div class="text-center py-10 text-slate-400">Your cart is empty. Start adding items from the menu!</div>';
+          $("#drawerFooter").innerHTML = '';
+          return;
+        }
+
+        const itemsHtml = STATE.cart.map((it, i) => `
+          <div class='flex items-center justify-between py-3 border-b border-slate-700/50 last:border-b-0 hover:bg-slate-800/50 px-2 -mx-2 rounded-md transition'>
+            <div class='flex-grow pr-4'>
+              <div class='font-semibold text-white'>${it.item}</div>
+              <div class='text-xs text-slate-500'>from ${it.rest}</div>
+            </div>
+            <div class='font-bold text-yellow-400'>₹${it.price}</div>
+            <button class='ml-3 text-sm font-medium text-red-400 hover:text-red-500 transition' onclick='APP.removeFromCart(${i});'>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </button>
+          </div>
+        `).join("");
+        
+        $("#drawerBody").innerHTML = `<div class="space-y-1">${itemsHtml}</div>`;
+        $("#drawerFooter").innerHTML = `
+          <div class="flex justify-between items-center text-2xl font-bold mb-4">
+            <span>Total:</span>
+            <span class="text-yellow-400">₹${total.toFixed(0)}</span>
+          </div>
+          <button class="w-full btn-primary font-bold py-3 rounded-xl" onclick="APP.openPaymentDrawer(${total})">
+            Proceed to Payment
+          </button>`;
+        APP.openDrawer();
+      },
+      
+      removeFromCart(index) {
+        STATE.cart.splice(index, 1);
+        APP.updateUI();
+        APP.renderCart(); 
+      },
+
+      // --- Payment Logic (Order Food) ---
+      openPaymentDrawer(amount) {
+        $("#drawerTitle").textContent = "💳 Select Payment";
+        $("#drawerBody").innerHTML = `
+          <p class="text-slate-400 mb-6 text-lg">Amount Payable: <span class="text-2xl font-bold text-yellow-400">₹${amount.toFixed(0)}</span></p>
+          <div class="grid grid-cols-1 gap-4">
+            <button class="card-base p-4 rounded-xl text-left hover:bg-slate-800/70 transition ring-1 ring-indigo-500/20" onclick="APP.startRazorpayPayment(${amount})">
+              <h3 class="font-bold text-indigo-400">Razorpay (UPI/Card/NetBanking)</h3>
+              <p class="text-sm text-slate-400">Secure online payment via official gateway.</p>
+            </button>
+            <button class="card-base p-4 rounded-xl text-left hover:bg-slate-800/70 transition ring-1 ring-yellow-500/20" onclick="APP.mockPayment('Wallet', ${amount})">
+              <h3 class="font-bold text-yellow-400">Campus Wallet (₹${STATE.wallet})</h3>
+              <p class="text-sm text-slate-400">${STATE.wallet >= amount ? 'Sufficient balance. Deduct from wallet.' : 'Insufficient balance. Need other payment.'}</p>
+            </button>
+            <button class="card-base p-4 rounded-xl text-left hover:bg-slate-800/70 transition ring-1 ring-slate-500/20" onclick="APP.mockPayment('Cash', ${amount})">
+              <h3 class="font-bold">Cash at Counter</h3>
+              <p class="text-sm text-slate-400">Pay when you pick up your order (no wallet deduction).</p>
+            </button>
+          </div>
+        `;
+        $("#drawerFooter").innerHTML = '';
+      },
+
+      startRazorpayPayment(amount) {
+        try {
+            if (typeof Razorpay === 'undefined') {
+                throw new Error('Razorpay SDK not loaded');
+            }
+            const options = {
+                key: "rzp_test_YourKeyHere",
+                amount: amount * 100, 
+                currency: "INR",
+                name: "Campus Food",
+                description: "Food Order Payment",
+                image: "https://placehold.co/100x100/818cf8/0f172a?text=R",
+                handler: function (response){
+                    APP.paymentDone('Razorpay UPI/Card', {amount: amount, paymentId: response.razorpay_payment_id});
+                },
+                prefill: { name: STATE.user?.name || "Student", email: (STATE.user?.roll || 'guest') + '@campus.edu', contact: "9999999999" },
+                notes: { order_id: `CMP-${Date.now()}` },
+                theme: { color: '#818cf8' }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            console.log('Using mock payment flow:', error.message);
+            APP.showToast("Development mode: Simulating payment...", 2000);
+            setTimeout(() => {
+                APP.paymentDone('Razorpay UPI/Card (Test)', {amount: amount, paymentId: 'test_' + Date.now()});
+            }, 2500);
+        }
+      },
+
+      mockPayment(mode, amount) {
+        if (mode === 'Wallet' && STATE.wallet < amount) {
+          return APP.showToast("Payment failed: Insufficient wallet balance.", 3000);
+        }
+        APP.paymentDone(mode, {amount: amount});
+      },
+
+      paymentDone(mode, info) {
+        const total = STATE.cart.reduce((a, c) => a + c.price, 0);
+        STATE.orders.push({when: new Date().toISOString(), mode, total, items: [...STATE.cart]});
+        STATE.wallet = Math.max(0, STATE.wallet - (mode === 'Wallet' ? total : 0));
+        STATE.cart = [];
+        APP.updateUI();
+        APP.closeDrawer();
+        APP.showToast(`✅ Order placed! Payment via ${mode}. Total: ₹${total.toFixed(0)}. Ready for pickup!`, 5000);
+      },
+
+      // --- Mess Booking Features (Hosteller Specific) ---
+
+      openMessBookingDrawer() {
+        $("#drawerTitle").textContent = "🏷️ Book Mess Meal";
+        $("#drawerBody").innerHTML = `
+          <p class="text-slate-400 mb-6">Select your meal options below. Today's subscription status: <span class="text-indigo-400 font-semibold">Valid</span>.</p>
+          <div class="space-y-4">
+              <div>
+                  <label for="messDate" class="text-sm font-medium text-slate-400">Date</label>
+                  <input type="date" id="messDate" class="w-full mt-1 p-3 rounded-lg border focus:ring-yellow-500 focus:border-yellow-500" value="${new Date().toISOString().slice(0, 10)}" />
+              </div>
+              <div>
+                  <label for="messMeal" class="text-sm font-medium text-slate-400">Meal Time</label>
+                  <select id="messMeal" class="w-full mt-1 p-3 rounded-lg border focus:ring-yellow-500 focus:border-yellow-500">
+                      <option>Breakfast (7:30 AM)</option>
+                      <option>Lunch (1:00 PM)</option>
+                      <option>Dinner (8:00 PM)</option>
+                  </select>
+              </div>
+              <div>
+                  <label for="messMenu" class="text-sm font-medium text-slate-400">Menu Option</label>
+                  <select id="messMenu" class="w-full mt-1 p-3 rounded-lg border focus:ring-yellow-500 focus:border-yellow-500">
+                      <option>Standard Veg Thali</option>
+                      <option>Non-Veg Addition (+₹50)</option>
+                      <option>Diet Meal</option>
+                  </select>
+              </div>
+          </div>
+          <div id="messResult" class="mt-4 p-3 bg-slate-800/50 rounded-lg text-slate-300 hidden"></div>
+        `;
+        $("#drawerFooter").innerHTML = `
+          <button class="w-full bg-yellow-500 text-slate-900 font-bold py-3 rounded-xl hover:opacity-95 transition shadow-lg shadow-yellow-500/50" onclick="APP.bookMess()">
+            Book Meal Slot
+          </button>
+        `;
+        APP.openDrawer();
+      },
+
+      bookMess() {
+        const date = $("#messDate").value;
+        const meal = $("#messMeal").value;
+        const menu = $("#messMenu").value;
+        const seat = Math.floor(Math.random() * 1000) + 1;
+        
+        STATE.messHistory.push({ date, meal, menu, seat, when: new Date().toISOString() });
+        
+        const resultEl = $("#messResult");
+        resultEl.classList.remove('hidden');
+        resultEl.innerHTML = `<p>✅ **Success!** Your seat is booked for ${meal} on ${date}.</p><p class="text-sm mt-1">Your Mess Seat Number: <span class="text-yellow-400 font-bold">#${seat}</span></p>`;
+        
+        APP.updateUI(); // Save history
+        APP.showToast(`✅ Mess booking confirmed for ${meal} on ${date}!`, 3000);
+      },
+
+      openMessHistoryDrawer() {
+        $("#drawerTitle").textContent = "🧾 Mess History";
+        
+        const rows = STATE.messHistory.map((m,i)=>`
+          <tr class="border-b border-slate-700/50">
+            <td class="p-3 text-slate-400">${STATE.messHistory.length - i}</td>
+            <td class="p-3 text-sm">${new Date(m.when).toLocaleDateString()}</td>
+            <td class="p-3 text-indigo-400 font-semibold">${m.meal.split(' ')[0]}</td>
+            <td class="p-3 font-bold text-yellow-400">#${m.seat}</td>
+            <td class="p-3 text-sm text-slate-500">${m.menu.split(' ')[0]}</td>
+          </tr>
+        `).reverse().join("");
+
+        $("#drawerBody").innerHTML = `
+          <p class="text-slate-400 mb-4">You have a total of <span class="font-bold text-white">${STATE.messHistory.length}</span> bookings recorded.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left bg-slate-800 rounded-xl overflow-hidden">
+              <thead>
+                <tr class="bg-slate-700">
+                  <th class="p-3 rounded-tl-lg">#</th>
+                  <th class="p-3">Date</th>
+                  <th class="p-3">Meal</th>
+                  <th class="p-3">Seat</th>
+                  <th class="p-3 rounded-tr-lg">Type</th>
+                </tr>
+              </thead>
+              <tbody>${rows || `<tr><td colspan=5 class="text-center p-6 text-slate-500">No mess bookings yet.</td></tr>`}</tbody>
+            </table>
+          </div>
+        `;
+        $("#drawerFooter").innerHTML = '';
+        APP.openDrawer();
+      },
+
+      openPreviousOrdersDrawer() {
+        $("#drawerTitle").textContent = "🧾 Food Orders History";
+        
+        const rows = STATE.orders.map((o,i)=>`
+          <tr class="border-b border-slate-700/50">
+            <td class="p-3 text-slate-400">${STATE.orders.length - i}</td>
+            <td class="p-3 text-sm">${new Date(o.when).toLocaleString()}</td>
+            <td class="p-3 text-indigo-400 font-semibold">${o.mode}</td>
+            <td class="p-3 font-bold text-yellow-400">₹${o.total}</td>
+            <td class="p-3 text-sm text-slate-500">${o.items.length} items</td>
+          </tr>
+        `).reverse().join("");
+
+        $("#drawerBody").innerHTML = `
+           <p class="text-slate-400 mb-4">These are your orders from campus restaurants.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left bg-slate-800 rounded-xl overflow-hidden">
+              <thead>
+                <tr class="bg-slate-700">
+                  <th class="p-3 rounded-tl-lg">#</th>
+                  <th class="p-3">When</th>
+                  <th class="p-3">Mode</th>
+                  <th class="p-3">Total</th>
+                  <th class="p-3 rounded-tr-lg">Details</th>
+                </tr>
+              </thead>
+              <tbody>${rows || `<tr><td colspan=5 class="text-center p-6 text-slate-500">No restaurant orders yet.</td></tr>`}</tbody>
+            </table>
+          </div>
+        `;
+        $("#drawerFooter").innerHTML = '';
+        APP.openDrawer();
+      },
+
+      // --- Misc Functionality ---
+      capitalize(s){return s[0].toUpperCase() + s.slice(1);},
+
+      // --- Event Listeners and Setup ---
+      setupListeners() {
+        $("#btnLogin")?.addEventListener("click", APP.login);
+        $("#modeToggle")?.addEventListener("click", () => {
+          document.documentElement.classList.toggle("light");
+          const isLight = document.documentElement.classList.contains("light");
+          $("#modeToggle").textContent = isLight ? "☀️" : "🌙";
+        });
+        
+        // Ensure initial state is reflected
+        const isLight = document.documentElement.classList.contains("light");
+        $("#modeToggle").textContent = isLight ? "☀️" : "🌙";
+      }
+    }; // End of APP object
+
+    // Google Translate Initialization
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages:'hi,fr,pa,ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+
+    // Initialize the Application
+    document.addEventListener('DOMContentLoaded', () => {
+        APP.init();
+    });
+
+  </script>
+  <!-- Google Translate widget -->
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
