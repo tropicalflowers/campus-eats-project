@@ -119,13 +119,15 @@ const AppProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        // Firebase configuration - use environment variables for security
+        // DO NOT hardcode API keys in source code
         const firebaseConfig = {
-            apiKey: "AIzaSyCmTAAir5m1TrgbkiWf6mM1bQIbzj3pQCs",
-            authDomain: "campus-eats-556e0.firebaseapp.com",
-            projectId: "campus-eats-556e0",
-            storageBucket: "campus-eats-556e0.firebasestorage.app",
-            messagingSenderId: "269572970926",
-            appId: "1:269572970926:web:b7c0201ea7e170910d903f",
+            apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "",
+            authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "",
+            projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "",
+            storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "",
+            messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "",
+            appId: process.env.REACT_APP_FIREBASE_APP_ID || "",
         };
 
         try {
